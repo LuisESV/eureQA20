@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">eureQA20</string>
+    <string name="action_settings">Configuración</string>
+    <string name="edit_message">Hola! ¿qué pregunta tienes hoy?</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_display_message">Respuesta</string>
+</resources>
