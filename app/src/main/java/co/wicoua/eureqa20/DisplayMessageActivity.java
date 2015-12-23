@@ -5,17 +5,22 @@ import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
 
+import android.util.Log;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.Request;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,31 +40,18 @@ public class DisplayMessageActivity extends AppCompatActivity {
         String url = "http://api.meaningcloud.com/topics-2.0";
 
 
-        JSONObject params = new JSONObject();
-        try {
-            params.put("key", "6fae45ea7eee81ea79e48a89ea0e1fb7");
-            params.put("lang", "es");
-            params.put("txt", "message");
-            params.put("tt", "a");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-
-        // Post params to be sent to the server
-        /*HashMap<String, String> params = new HashMap<String, String>();
-        params.put("key", "6fae45ea7eee81ea79e48a89ea0e1fb7");
-        params.put("lang", "es");
-        params.put("txt", "message");
-        params.put("tt", "a");*/
-
-
-        JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        StringRequest jsonRequest = new StringRequest
+                (Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                            System.out.println(response);
+                    public void onResponse(String response) {
+                        System.out.println(response);
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            /*Log.d("estado", (String) obj.get("estado"));*/
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 }, new Response.ErrorListener() {
 
@@ -67,7 +59,18 @@ public class DisplayMessageActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                     }
-                });
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("key", "6fae45ea7eee81ea79e48a89ea0e1fb7");
+                params.put("lang", "es");
+                params.put("txt", message);
+                params.put("tt", "a");
+                return params;
+            }
+        };
+
 
         Volley.newRequestQueue(this).add(jsonRequest);
 
